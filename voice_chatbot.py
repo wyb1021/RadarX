@@ -6,6 +6,7 @@ import numpy as np
 from vosk import Model, KaldiRecognizer
 from transformers import AutoModelForCausalLM, AutoTokenizer
 import subprocess
+import time
 
 class VoiceChatbot:
     def __init__(self):
@@ -29,10 +30,17 @@ class VoiceChatbot:
             print("오디오 장치를 찾을 수 없습니다. 마이크가 연결되어 있는지 확인해주세요.")
             self.input_device = None
         
+        # 마지막 오류 메시지 출력 시간
+        self.last_error_time = 0
+        self.error_interval = 5  # 오류 메시지 출력 간격(초)
+        
     def record_audio(self, duration=5):
         """음성 녹음"""
         if self.input_device is None:
-            print("오디오 장치가 없습니다.")
+            current_time = time.time()
+            if current_time - self.last_error_time >= self.error_interval:
+                print("오디오 장치가 없습니다. 마이크를 확인해주세요.")
+                self.last_error_time = current_time
             return None
             
         print("음성 녹음 중...")
@@ -45,7 +53,10 @@ class VoiceChatbot:
             sd.wait()
             return recording
         except Exception as e:
-            print(f"녹음 중 오류 발생: {e}")
+            current_time = time.time()
+            if current_time - self.last_error_time >= self.error_interval:
+                print(f"녹음 중 오류 발생: {e}")
+                self.last_error_time = current_time
             return None
         
     def transcribe_speech(self, audio_data):
@@ -77,7 +88,7 @@ class VoiceChatbot:
                 # 음성 녹음
                 audio = self.record_audio()
                 if audio is None:
-                    print("마이크를 확인하고 다시 시도해주세요.")
+                    time.sleep(0.1)  # CPU 사용량을 줄이기 위한 짧은 대기
                     continue
                 
                 # 음성을 텍스트로 변환
@@ -96,7 +107,11 @@ class VoiceChatbot:
                 print("챗봇 종료")
                 break
             except Exception as e:
-                print(f"오류 발생: {e}")
+                current_time = time.time()
+                if current_time - self.last_error_time >= self.error_interval:
+                    print(f"오류 발생: {e}")
+                    self.last_error_time = current_time
+                time.sleep(0.1)  # CPU 사용량을 줄이기 위한 짧은 대기
                 continue
 
 if __name__ == "__main__":
