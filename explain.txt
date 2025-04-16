@@ -1,0 +1,18 @@
+코드 다운받고
+espeak 다운받기 https://sourceforge.net/projects/espeak/files/espeak/espeak-1.48/setup_espeak-1.48.04.exe/download
+vosk 다운받기 https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
+터미널에서
+   cd C:\Users\UOS\Desktop\wang\eSpeak
+   pip install sounddevice
+   pip install numpy
+   pip install vosk
+   pip install transformers
+   pip install torch
+
+   py voice_chatbot.py
+
+
+
+
+
+
