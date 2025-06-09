@@ -63,7 +63,9 @@
 | 3D printing & final packaging | Ongoing  |
 
 ## Contributors
+- Yubin Wang
+- Jinwook Lee
+- Hyunseo Lim
 
-- 왕유빈 
-- 이진욱  
-- 임현서
+Department of Electrical, Electronic and Computer Engineering  
+University of Seoul
