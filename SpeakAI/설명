@@ -1,0 +1,4 @@
+.\safe_env\Scripts\activate
+위 명령어를 통해 safe_env로 접속
+그 이후 python llm_server_monologg.py한 후
+python main.py 하면 됨

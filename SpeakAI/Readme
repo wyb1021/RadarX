@@ -1,0 +1,90 @@
+🎤 입력 (마이크)
+✅ ReSpeaker 2-Mic Pi HAT
+(노이즈 억제 + I2S 마이크 2개 내장, RPi GPIO 직결)
+https://www.devicemart.co.kr/goods/view?no=1383297
+🔊 출력 (DAC + 앰프 + 스피커)
+✅ PCM5102A I2S DAC (음질 우수, PAM8403과 조합)
+https://www.devicemart.co.kr/goods/view?no=15667751
+✅ PAM8403 mini amplifier module
+https://www.devicemart.co.kr/goods/view?no=1326893
+✅ 패시브 스피커 4Ω/3W × 2개
+https://www.devicemart.co.kr/goods/view?no=12236769
+또는 대체로: ✅ MAX98357A I2S DAC + AMP (스피커 직접 연결 가능, 공간 절약)
+
+
+핀번호
+
+Raspberry Pi 4 기반 AI 스피커 전체 회로 연결도 요약
+🎛 1. ReSpeaker 2-Mic Pi HAT → Raspberry Pi 4
+기능	        ReSpeaker 핀	RPi GPIO 핀 번호	설명
+I2S Mic Clock   BCLK	        GPIO18 (Pin 12)	
+I2S Mic WS	    LRCLK	        GPIO19 (Pin 35)	
+I2S Mic Data	DOUT	        GPIO20 (Pin 38)	
+I2S Mic SD	    DIN	            GPIO21 (Pin 40)	
+I2C	            SDA / SCL	    GPIO2 (Pin 3), GPIO3 (Pin 5)	
+전원	         VCC / GND	     5V (Pin 2/4), GND (Pin 6)	
+
+➡️ HAT이 RPi 40핀 전체에 꽂히지만, 위 핀만 사용합니다.
+
+🎧 2. PCM5102A I2S DAC → Raspberry Pi 4
+기능	PCM5102A 핀	RPi GPIO 핀 번호	설명
+BCLK	BCK	        GPIO18 (Pin 12)	
+LRCK	LCK	        GPIO19 (Pin 35)	
+DATA	DIN	        GPIO21 (Pin 40)	
+GND	    GND	        GND (Pin 39 등)	
+VCC	    3.3V	    3.3V (Pin 1) 권장	
+
+➡️ ReSpeaker와 I2S 핀 공유 가능 (병렬 I2S 허용)
+
+🔊 3. PAM8403 Amp Module → PCM5102A
+기능	        PAM8403 입력	PCM5102A 출력
+L/R Audio In	L / R	        LOUT / ROUT
+GND	            GND	            GND
+전원	         VCC	         5V (USB 또는 Pin 2/4)
+
+🔈 4. 패시브 스피커 (x2) → PAM8403
+Speaker L → L+ / L−
+
+Speaker R → R+ / R−
+
+📉 5. MCP3008 + Potentiometer x2 → Raspberry Pi 4
+기능	    MCP3008 핀	    RPi GPIO 핀 번호
+CLK	        Pin 13	        GPIO11 (SCLK)
+DOUT	    Pin 12	        GPIO9 (MISO)
+DIN	        Pin 11	        GPIO10 (MOSI)
+CS	        Pin 10	        GPIO8 (CE0)
+VDD / VREF	Pin 16/15	    3.3V (Pin 1)
+AGND / DGND	Pin 14/9	    GND (Pin 6)
+
+Potentiometer 1 → CH0 (Pin 1)
+
+Potentiometer 2 → CH1 (Pin 2)
+
+✅ 정리: 총 연결 요약
+구성요소	        RPi 연결 방식
+ReSpeaker HAT	    GPIO18–21, 2–3
+PCM5102A	        GPIO18–19–21 (공유)
+PAM8403	            PCM5102A → PAM8403
+MCP3008	            SPI (GPIO8–11 + 3.3V)
+Potentiometer	    MCP3008 CH0/CH1
+
+
+
+단계별 구성요소 및 코드 실행 위치
+| 단계 | 구성 요소                   | 설명                                                 | 작동 위치                       |
+| -- | -----------------------      | ----------------------------------------------      | --------------------------- |
+| 1  | **ReSpeaker 2-Mic HAT**      | I2S 기반 마이크 입력                                  | GPIO로 실시간 연결, ALSA 드라이버 필요  |
+| 2  | **Python 녹음 코드**          | `arecord`, `PyAudio`, `sounddevice` 등으로 WAV 저장   | `record.py` 등으로 실행          |
+| 3  | **STT (음성 인식)**           | Whisper, Vosk, Google API 중 하나                    | `stt.py` (Python 모듈)        |
+| 4  | **tinyLLM 처리**             | 입력 텍스트에 응답 생성                                 | `tinyllm_interface.py` 등    |
+| 5  | **TTS (음성 합성)**           | `pyttsx3`, `gTTS`, Coqui 등                          | `tts.py`에서 합성된 음성 생성        |
+| 6  | **DAC + Amp + 스피커**        | `aplay`로 I2S DAC에 출력 → PAM8403 증폭               | `playback.py` 또는 subprocess |
+
+
+설치 명령어 정리
+pip install sounddevice soundfile openai-whisper pyttsx3 tinyllm
+sudo apt install alsa-utils  # aplay 실행용
+
+실행 순서
+cd ~/ai_speaker_project
+python3 main.py
