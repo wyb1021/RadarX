@@ -12,7 +12,7 @@ import sys
 import json
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
-# CamEmotion2.py 상단
+
 DIRS = {'DATA_OUTPUT': 'data'}
 EMOTION_CONFIG = {
     'smoothing_window': 5,
