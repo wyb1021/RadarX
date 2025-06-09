@@ -1,15 +1,12 @@
 # RadarX: Emotion-Aware AI Assistant using Radar and Camera (Ongoing)
 
 ## Overview
-
 **RadarX** is an AI assistant that detects and responds to human emotions using a combination of **radar-based HRV (Heart Rate Variability)** sensing and **camera-based facial expression analysis**. This multimodal system is designed to support mental well-being, especially in socially isolated individuals, by providing emotionally adaptive feedback and conversation.
 
 > This project addresses South Korea's rising mental health concerns by combining physiological and facial emotion recognition into a conversational AI system.
 
----
 
 ## Key Features
-
 - **HRV Emotion Recognition (Radar)**
   - Extracts HRV parameters such as RMSSD, SDNN, LF, HF, meanHR, ampHR, etc.
   - Converts physiological signals to emotional metrics: *Valence* and *Arousal*
@@ -22,9 +19,6 @@
   - Accepts speech input (PC)
   - Transcribes with Whisper, analyzes emotion (KoELECTRA), generates responses (pyttsx3)
   - Sends response audio to Raspberry Pi via SCP for playback
-
----
----
 
 ## System Architecture
 
@@ -49,8 +43,6 @@
 - Audio Transfer: `SCP → Raspberry Pi`
 - Playback: `aplay`
 
----
-
 ## Demo Progress
 
 - Radar HRV emotion recognition completed
@@ -58,8 +50,6 @@
 - AI assistant speech interface running on PC
 - Raspberry Pi receives and plays back emotion-aware response
 - LCD + Camera integrated into 3D printed housing
-
----
 
 ## Timeline Summary
 
@@ -71,8 +61,6 @@
 | LCD integration               | Done     |
 | Full system demo              | Ongoing  |
 | 3D printing & final packaging | Ongoing  |
-
----
 
 ## Contributors
 
